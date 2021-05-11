@@ -1,6 +1,7 @@
 #ifndef SHA256_H
 #define SHA256_H
 
+
 #include "ap_int.h"
 
 typedef ap_uint<512> bits512;
