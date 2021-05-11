@@ -67,6 +67,11 @@ void get_Wi(bits6 &round, bits32 &Wi, bits32 &firstsWi) {
     
 }
 
+bits256 blockprocessing()
+{
+
+}
+
 int main() {
     
 }
