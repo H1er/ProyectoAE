@@ -69,9 +69,39 @@ void get_Wi(bits6 &round, bits32 &Wi, bits32 &firstsWi) {
 
 bits256 blockprocessing()
 {
+	static bits32 AH [8] = H0;
+
+
 
 }
 
-int main() {
-    
+int main(string mensaje)
+{
+	//padding(mensaje, b)
+
+		for (int i=0;i<b;i++)
+		{
+			//llamada a la pfga
+		}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
