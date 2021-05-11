@@ -97,35 +97,3 @@ void blockprocessing(bits512 block, bits1 final, bits256 &hash)
 		AH = H0; //el reset
 	}
 }
-
-/*
- *
-int main(string mensaje)
-{
-	//padding(mensaje, b)
-
-		for (int i=0;i<b;i++)
-		{
-			//llamada a la pfga
-		}
-}
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
