@@ -4,6 +4,7 @@
 #include "ap_int.h"
 
 typedef ap_uint<512> bits512;
+typedef ap_uint<256> bits256;
 typedef ap_uint<32> bits32;
 typedef ap_uint<9> bits9;
 typedef ap_uint<6> bits6;
