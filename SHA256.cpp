@@ -1,5 +1,6 @@
 #include <iostream>
 #include "SHA256.h"
+#include <ap_fixed.h>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ bits32 maj (bits32 x, bits32 y, bits32 z) {
     return (x & y) ^ (x & z) ^ (y & z);
 }
 
-bits32 decomposition (bits6 &round, bits32 &firstsWi, bits512 block) {
+void decomposition (bits6 &round, bits32 &firstsWi, bits512 block) {
     bits9 idx = 512 - (round * 32);
     firstsWi = block.range(idx, idx - 32);
 }
@@ -67,14 +68,38 @@ void get_Wi(bits6 &round, bits32 &Wi, bits32 &firstsWi) {
     
 }
 
-bits256 blockprocessing()
-{
-	static bits32 AH [8] = H0;
+void blockprocessing(bits512 block, bits1 final, bits256 &hash)
+{												   //0 1 2 3 4 5 6 7
+	static bits32 AH [8] = H0; //añadir reset,    AH{a,b,c,d,e,f,g,h}
+	bits32 aux,wi, T1,T2;
 
+	for(int i=0;i<64;i++) //64 rondas de procesado
+	{
+		decomposition(i, aux, block);
+		get_Wi(i, wi, aux);
 
+		T1 = AH[7] ^ sigma_1upper(AH[4]) + ch(AH[4], AH[5], AH[6]) + K[i] + wi;
+		T2 = sigma_0upper(AH[0]) + maj(AH[0], AH[1], AH[2]);
 
+		AH[7] = AH[6];;
+		AH[6] = AH[5];
+		AH[5] = AH[4];
+		AH[4] = AH[3] + T1;
+		AH[3] = AH[2];
+		AH[2] = AH[1];
+		AH[1] = AH[0];
+		AH[0] = T1 + T2;
+	}
+
+	if(final)
+	{
+		hash = AH[0].concat(AH[1].concat(AH[2].concat(AH[3].concat(AH[4].concat(AH[5].concat(AH[6].concat(AH[7])))))));
+		AH = H0;
+	}
 }
 
+/*
+ *
 int main(string mensaje)
 {
 	//padding(mensaje, b)
@@ -83,10 +108,9 @@ int main(string mensaje)
 		{
 			//llamada a la pfga
 		}
-
 }
 
-
+*/
 
 
 
