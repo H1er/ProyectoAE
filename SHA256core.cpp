@@ -68,9 +68,9 @@ void get_Wi(bits6 &round, bits32 &Wi, bits32 &firstsWi) {
     
 }
 
-void blockprocessing(bits512 block, bits1 final, bits256 &hash)
+void blockprocessing(bits512 block, bits32[8] AH)
 {												   //0 1 2 3 4 5 6 7
-	static bits32 AH [8] = H0; //añadir reset,    AH{a,b,c,d,e,f,g,h}
+	//static bits32 AH [8] = H0; //aï¿½adir reset,    AH{a,b,c,d,e,f,g,h}
 	bits32 aux,wi, T1,T2;
 
 	for(int i=0;i<64;i++) //64 rondas de procesado
@@ -91,9 +91,11 @@ void blockprocessing(bits512 block, bits1 final, bits256 &hash)
 		AH[0] = T1 + T2;
 	}
 
-	if(final)
+    //hash = AH[0].concat(AH[1].concat(AH[2].concat(AH[3].concat(AH[4].concat(AH[5].concat(AH[6].concat(AH[7])))))));
+
+	/*if(final)
 	{
-		hash = AH[0].concat(AH[1].concat(AH[2].concat(AH[3].concat(AH[4].concat(AH[5].concat(AH[6].concat(AH[7])))))));
+		
 		AH = H0; //el reset
-	}
+	}*/
 }

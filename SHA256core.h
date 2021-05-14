@@ -29,6 +29,6 @@ bits32 maj (bits32 x, bits32 y, bits32 z);
 
 void decomposition (bits6 &round, bits32 &firstsWi, bits512 block);
 
-void blockprocessing (bits512 block, bits1 final, bits256 &hash);
+void blockprocessing (bits512 block, bits32[8] AH);
 
 #endif
