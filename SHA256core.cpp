@@ -1,6 +1,7 @@
 #include <iostream>
-#include "SHA256.h"
+#include "SHA256core.h"
 #include <ap_fixed.h>
+
 
 using namespace std;
 
@@ -34,7 +35,7 @@ bits32 sigma_1upper (bits32 x) {
 }
 
 bits32 rotr (bits32 a, bits5 shift) {
-    return (a << shift) | (a >> (32 - shift));
+    return (a >> shift) | (a << (32 - shift));
 }
 
 bits32 ch (bits32 x, bits32 y, bits32 z) {
@@ -45,19 +46,33 @@ bits32 maj (bits32 x, bits32 y, bits32 z) {
     return (x & y) ^ (x & z) ^ (y & z);
 }
 
-void decomposition (bits6 &round, bits32 &firstsWi, bits512 block) {
-    bits9 idx = 512 - (round * 32);
-    firstsWi = block.range(idx, idx - 32);
+void decomposition (bits6 round, bits32 &firstsWi, bits512 block) {
+
+	if (round < 16) {
+
+		int idx = 511 - (round * 32);
+
+		firstsWi = block.range(idx, idx-31);
+
+	}
+
 }
 
 void get_Wi(bits6 &round, bits32 &Wi, bits32 &firstsWi) {
+
+	static bits32 previousWi[16] = {};  // Hay que usar RESET
+
+	if (round == 0) {
+		for (short i = 15; i >= 0; i--) {
+				previousWi[i] = 0;
+			}
+	}
     
-    static bits32 previousWi[16] = {};  // Hay que usar RESET
 
     if (round < 16) {
         Wi = firstsWi;
     } else {
-        Wi = sigma_1lower(previousWi[1]) + previousWi[6] + sigma_0lower(previousWi[4]) + previousWi[15];
+        Wi = sigma_1lower(previousWi[1]) + previousWi[6] + sigma_0lower(previousWi[14]) + previousWi[15];
     }
 
     for (short i = 15; i > 0; i--) {
@@ -65,23 +80,31 @@ void get_Wi(bits6 &round, bits32 &Wi, bits32 &firstsWi) {
 	}
 
     previousWi[0] = Wi;
-    
+
+    //cout << "W" << round.to_string(10, false) << " = " << Wi << endl;
 }
 
-void blockprocessing(bits512 block, bits32[8] AH)
-{												   //0 1 2 3 4 5 6 7
-	//static bits32 AH [8] = H0; //a�adir reset,    AH{a,b,c,d,e,f,g,h}
+
+
+void blockprocessing (bits512 block, bits32 AH[8]) {
 	bits32 aux,wi, T1,T2;
+	bits6 r = 0;
 
-	for(int i=0;i<64;i++) //64 rondas de procesado
-	{
-		decomposition(i, aux, block);
-		get_Wi(i, wi, aux);
+	for(short i=0; i<64; i++) { //64 rondas de procesado
 
-		T1 = AH[7] ^ sigma_1upper(AH[4]) + ch(AH[4], AH[5], AH[6]) + K[i] + wi;
+		r = i;
+
+		decomposition(r, aux, block);
+		get_Wi(r, wi, aux);
+
+		T1 = AH[7] + sigma_1upper(AH[4]) + ch(AH[4], AH[5], AH[6]) + K[i] + wi;
 		T2 = sigma_0upper(AH[0]) + maj(AH[0], AH[1], AH[2]);
 
-		AH[7] = AH[6];;
+		//cout << i << "\t";
+		//cout << "T1: " << T1.to_string(10) << "\t";
+		//cout << "T2: " << T2.to_string(10) << endl;
+
+		AH[7] = AH[6];
 		AH[6] = AH[5];
 		AH[5] = AH[4];
 		AH[4] = AH[3] + T1;
@@ -89,13 +112,8 @@ void blockprocessing(bits512 block, bits32[8] AH)
 		AH[2] = AH[1];
 		AH[1] = AH[0];
 		AH[0] = T1 + T2;
+
 	}
 
-    //hash = AH[0].concat(AH[1].concat(AH[2].concat(AH[3].concat(AH[4].concat(AH[5].concat(AH[6].concat(AH[7])))))));
-
-	/*if(final)
-	{
-		
-		AH = H0; //el reset
-	}*/
 }
+

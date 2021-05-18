@@ -1,11 +1,12 @@
-#ifndef SHA256_H
-#define SHA256_H
+#ifndef SHA256core_H
+#define SHA256core_H
 
 
-#include "ap_int.h"
+#include <ap_int.h>
 
 typedef ap_uint<512> bits512;
 typedef ap_uint<256> bits256;
+typedef ap_uint<64> bits64;
 typedef ap_uint<32> bits32;
 typedef ap_uint<9> bits9;
 typedef ap_uint<6> bits6;
@@ -27,8 +28,8 @@ bits32 rotr (bits32 x, bits5 shift);
 
 bits32 maj (bits32 x, bits32 y, bits32 z);
 
-void decomposition (bits6 &round, bits32 &firstsWi, bits512 block);
+void decomposition (bits6 round, bits32 &firstsWi, bits512 block);
 
-void blockprocessing (bits512 block, bits32[8] AH);
+void blockprocessing(bits512 block, bits32 AH[8]);
 
 #endif
