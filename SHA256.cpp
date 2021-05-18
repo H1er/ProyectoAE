@@ -8,6 +8,7 @@
 using namespace std;
 
 #define H0 {0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c, 0x1f83d9ab, 0x5be0cd19}
+const char hex[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 char asciitolower(char in) {
     if (in <= 'Z' && in >= 'A')
@@ -83,19 +84,12 @@ string sha256(string msg) {
     }
 
 
-    bits256 hash = (prevH[0], prevH[1]);
+    string s = "";
 
-    hash = (hash, prevH[2]);
-    hash = (hash, prevH[3]);
-    hash = (hash, prevH[4]);
-    hash = (hash, prevH[5]);
-    hash = (hash, prevH[6]);
-    hash = (hash, prevH[7]);
-
-    string s = hash.to_string(16).erase(0,2);
-
-    for (int i=0; i<s.length(); i++) {
-    	s[i] = asciitolower(s[i]);
+    for (int i=0; i<8; i++) {
+    	for (int j=0; j<32; j+=4) {
+    		s.push_back(hec[prevH[i].range(j+4, j)]);
+    	}
     }
 
     return s;
