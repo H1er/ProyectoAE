@@ -49,21 +49,18 @@ string sha256(string msg) {
     block += bitset<64>(tam).to_string();
     auxBlock += 64;
 
-    bits512 blocks[numBlocks-1];
+    bits512 blocks[numBlocks];
+
+    int idx=0;
 
     for(int i=0; i<numBlocks; i++){
-        for(int j = 0;j<8;j++) {
-
-        	string sublock = block.substr(j*64,64);
-
-        	cout<<"sublock:  "<<sublock<<endl;
-
-        	bits64 psv = stoll(sublock,nullptr,2); //
-
-        	blocks[i] = (blocks[i], psv);
-
+        for(int j = 0; j<512; j++) {
+        	blocks[i][511-j] = (bits1) block[idx];
+        	idx++;
         }
+        cout << blocks[i].to_string(2).erase(0,2);
     }
+    cout << endl << block << endl;
 
 
     bits32 prevH[8] = H0, H[8];
@@ -75,8 +72,6 @@ string sha256(string msg) {
     	}
 
         bits512 bloque = blocks[i];
-
-        cout<<"bloque: "<<bloque<<endl;
 
         blockprocessing(bloque, H);
 

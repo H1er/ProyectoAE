@@ -29,7 +29,7 @@ int main () {
             return 1;
         }
 
-        cout << line;
+        cout << line << endl;
 
         getline(fpin, input);
         getline(fpout, output);
