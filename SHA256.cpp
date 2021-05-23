@@ -32,7 +32,6 @@ string sha256(string msg) {
 
     string block = "";
     for(int j=0; j<(tam/8); j++){
-
         block += bitset<8>(msg[j]).to_string();
         auxBlock += 8;
     }

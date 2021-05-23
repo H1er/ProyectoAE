@@ -29,14 +29,14 @@ int main () {
             return 1;
         }
 
-        cout << line << endl;
+        //cout << line << endl;
 
         getline(fpin, input);
         getline(fpout, output);
 
     } while(!(fpin.eof() || fpout.eof()));
 
-    cout << "Noice, all " << line << " tests passed.\n";
+    cout << "Nice, all " << line << " tests passed.\n";
 
     return 0;
 }
